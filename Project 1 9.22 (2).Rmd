@@ -1,0 +1,135 @@
+---
+title: "Emissions around the World"
+author: "Arthur Esenaliev"
+date: "2023-09-22"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document: default
+---
+*** 
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, tidy.opts=list(width.cutoff=60))
+options(scipen = 999)
+```
+
+```{r include = FALSE}
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+```
+
+```{r echo = FALSE}
+emissions <- read.csv("Project1_emissions.csv")
+```
+
+# __Intoduction__
+
+This report is about the kilotons of greenhouse gas emissions from chemical pollutants nitrous oxide and carbon dioxide around the world in 2018. The data was collected with concentrations of Carbon Dioxide and other greenhouse gases in the atmosphere. The emissions dataset^1^ contains the variables:
+
+| Variable Name       |                 Description                               |
+|------------------------------------|-----------------------------------------------------------|
+| Year                |                The year data was collected (2018)            |
+| Country             |                Country data was collected                    |
+| Region              |                World region of the country                   |
+| GDP                 |                Gross Domestic Product of the country         |
+| Population          |                Population of the country                     |
+| N2O_Produced        |                Amount of nitrous oxide produced              |
+| CO2_Produced        |                Amount of carbon dioxide produced             |
+
+
+
+^1^ Sourced from Our World in Data and and retrieved from CORGIS Dataset Project:
+
+* [https://ourworldindata.org/co2-and-greenhouse-gas-emissions](https://ourworldindata.org/co2-and-greenhouse-gas-emissions) 
+
+* [https://corgis-edu.github.io/corgis/csv/global_emissions/](https://corgis-edu.github.io/corgis/csv/global_emissions/)
+
+<br>
+The variable that is the chosen outcome is the amount of Carbon Dioxide produced,  or CO2_Produced. To investigate this, we will be comparing predictors Population, GDP, and Nitrous Oxide Produced. 
+
+![Source: https://static.scientificamerican.com/sciam/cache/file/D7123FA9-E46F-474F-A6CC21231555057D_source.jpg](emissions.jpg)
+
+***
+
+```{r echo = FALSE}
+emissions_ggplot <- ggplot(emissions)
+
+emissions_ggplot + geom_histogram(aes(x = CO2_Produced), bins = 50) +
+  xlab("Carbon Dioxide Produced (Kilotons)") +
+  ylab("Number of Countries") +
+  labs(title = "Carbon Dioxide Production Across Countries") +
+  ylim(c(0,60)) 
+
+```
+<br>
+The univariate histogram above shows the number of countries producing in each range of CO2 kilotons. The data contains an outlier, which is `r emissions$Country[which.max(emissions$CO2_Produced)]`. Also, the mean (average) kilotons of CO2 Produced in each country is `r round(mean(emissions$CO2_Produced), 2)` and the standard deviation is `r round(sd(emissions$CO2_Produced), 2)`. The data distribution is primarily right skewed. 
+
+### __Predictor graph 1__
+
+```{r echo = FALSE}
+PredictorGraph1 <- emissions_ggplot + geom_point(aes(x = Population, y = CO2_Produced)) +
+  xlab("Population") +
+  ylab("Carbon Dioxide Produced (Kilotons)") +
+  labs(title = "Population and Kilotons of Carbon Dioxide") +
+  theme_classic() 
+
+PredictorGraph1 <- PredictorGraph1 + scale_y_continuous(labels = scales::comma)
+PredictorGraph1 <- PredictorGraph1 + scale_x_continuous(labels = scales::comma)
+
+PredictorGraph1
+
+```
+<br>
+
+The bivariate scatterplot above shows the relationship between the populations of each country and the kilotons of Carbon Dioxide the country produces. The relationship correlation between the two variables can be used with correlation coefficient r, which is `r round(cor(emissions$Population, emissions$CO2_Produced), 2)`. This shows a strong positive correlation, considering the correlation coefficient being close to 1, as well as the graph showing a positive relationship between the two variables. So, the greater the population of a country, the more carbon dioxide is produced, according to the correlation coefficient and graph. Additionally noted, there are many points clustered toward the bottom left, so there are many countries with lower amounts of population and kilotons of CO2 produced.
+
+### __Predictor Graph 2__ 
+
+```{r echo = FALSE}
+PredictorGraph2 <- emissions_ggplot + geom_point(aes(x = GDP, y = CO2_Produced)) +
+  xlab("Gross Domestic Product ($)") +
+  ylab("Carbon Dioxide Produced (Kilotons)") +
+  labs(title = "GDP and Kilotons of Carbon Dioxide") +
+  theme_classic() 
+
+PredictorGraph2 <- PredictorGraph2 + scale_y_continuous(labels = scales::comma)
+PredictorGraph2 <- PredictorGraph2 + scale_x_continuous(labels = scales::comma)
+
+PredictorGraph2
+```
+<br>
+
+The bivariate scatterplot above shows the relationship between the Gross Domestic Product of each country and the kilotons of Carbon Dioxide the country produces. The relationship correlation between the two variables can be used with correlation coefficient r, which is `r round(cor(emissions$GDP, emissions$CO2_Produced), 2)`. This shows a very strong positive correlation, considering the correlation coefficient being very close to 1, as well as the graph showing a positive relationship between the two variables. With that, the higher the GDP the country has, the more CO2 it produces. Additionally noted, there are many points clustered toward the bottom left, so there are many countries with lower GDP's and kilotons of CO2 produced.
+
+### __Predictor Graph 3__
+
+```{r echo = FALSE}
+PredictorGraph3 <- emissions_ggplot + geom_point(aes(x = N2O_Produced, y = CO2_Produced)) +
+  xlab("Nitrous Oxide Produced (Kilotons)") +
+  ylab("Carbon Dioxide Produced (Kilotons)") +
+  labs(title = "Kilotons of Nitrous Oxide and Kilotons of Carbon Dioxide") +
+  theme_classic() 
+
+PredictorGraph3 <- PredictorGraph3 + scale_y_continuous(labels = scales::comma)
+PredictorGraph3 <- PredictorGraph3 + scale_x_continuous(labels = scales::comma)
+
+PredictorGraph3
+```
+<br>
+
+The bivariate scatterplot above shows the relationship between the kilotons of Nitrous Oxide Produced in each country and the kilotons of Carbon Dioxide the country produces. The relationship correlation between the two variables can be used with correlation coefficient r, which is `r round(cor(emissions$N2O_Produced, emissions$CO2_Produced), 2)`. This shows a very strong positive correlation, considering the correlation coefficient being close to 1, as well as the graph showing a very strong positive relationship between the two variables. Thus, the higher the amount of Nitrous Oxide is produced, the higher the amount of carbon dioxide is produced. Additionally noted, there are many points clustered toward the bottom left, so there are many countries with lower amounts of N2O Produced and kilotons of CO2 produced.
+
+### Conclusion
+From the findings, we can see that population, GDP, and emissions of other greenhouse gases like N2O influence the amount of carbon dioxide emitted across countries in the world. Specifically, the countries that are larger and more industrialized have greater emission levels. That being said, the countries with lower predictors (Population, GDP, N2O_Produced), the lower the amount of CO2 is produced. The greater each of these predictors, the more CO2 is produced. Thus, countries with greater population tend to produce more CO2 than smaller populated countries. The larger the GDP a country has, the more industrialized it is, so there are more factories emitting carbon dioxide into the atmosphere. Same thing with N2O, the more that the pollutant is emitted, the more likely CO2 is emitted. Some areas for further research could be by studying other greenhouse gases, like methane, or by analyzing the effects other predictors have on the emissions of greenhouse gases, like each country's land area or population density. 
+
+#### __References__
+* ALPERIN, BRYEN. “Understanding Scope 1, 2, &amp; 3 Emissions: How You Can Reduce Your Emissions With Tax Credits.” Foss &amp; Co, 7 Oct. 2022, fossandco.com/news/understanding-scope-123-emissions/. 
+
+* Ritchie, Hannah, et al. “CO₂ and Greenhouse Gas Emissions.” Our World in Data, 11 May 2020, ourworldindata.org/co2-and-greenhouse-gas-emissions. 
+
+* “Global Emissions CSV File.” CORGIS Datasets Project, corgis-edu.github.io/corgis/csv/global_emissions/. Accessed 22 Sept. 2023. 
+
+
+
