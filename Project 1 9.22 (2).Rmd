@@ -25,7 +25,7 @@ emissions <- read.csv("Project1_emissions.csv")
 ```
 
 # __Intoduction__
-
+THIS IS AN EDIT
 This report is about the kilotons of greenhouse gas emissions from chemical pollutants nitrous oxide and carbon dioxide around the world in 2018. The data was collected with concentrations of Carbon Dioxide and other greenhouse gases in the atmosphere. The emissions dataset^1^ contains the variables:
 
 | Variable Name       |                 Description                               |
